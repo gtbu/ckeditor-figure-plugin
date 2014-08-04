@@ -20,7 +20,7 @@
     CKEDITOR.plugins.add( 'figure', {
         requires: 'widget',
 
-        icons: 'figure',
+        icons: 'figure,sidebar,pullquote',
 
         init: function ( editor ) {
             //var figure = widgetDef( editor );
