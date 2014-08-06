@@ -1,5 +1,11 @@
 ( function() {
 
+    /* This plugin supports 3 types of widgets: 
+        1. figure: an image or video with caption and/or credit
+        2. sidebar: a small embedded piece of content that functions as a mini-article
+        3. pullquote: a small snippet of text
+    */
+
     var templates = {
         'figure':
             '<figure class="rt med">' +
@@ -17,17 +23,35 @@
             '</aside>'
     };
 
+    var sizes = {
+        'sm':'Small',
+        'med':'Medium',
+        'lrg':'Large',
+        'xlrg':'Extra-large'
+    };
+
+    var positions = {
+        'lt':'Left',
+        'ct':'Center',
+        'rt':'Right'
+    };
+
     CKEDITOR.plugins.add( 'figure', {
         requires: 'widget',
 
+        // initialize the icons for the button associated with each widget
         icons: 'figure,sidebar,pullquote',
 
         init: function ( editor ) {
+            //TODO: further modularize widget definition
             //var figure = widgetDef( editor );
 
             editor.widgets.add( 'figure', {
 
+                //initialize primary widget button. Uses icon defined in plugin
                 button: 'Create a figure',
+
+                //specify which dialog box should pop-up when the widget command is executed
                 dialog: 'figure',
 
                 template: templates.figure,
@@ -55,6 +79,7 @@
                 */
 
                 editables: {
+                    // Not yet sure if we're going to support other elements within figures
                     /*
                     figurebody: {
                         selector: 'figure',
@@ -77,9 +102,6 @@
 
                 allowedContent:
                     'figure; img[!src,alt]; figcaption(hi-cap)',
-                /*
-                disallowedContent: 'em strong u s sub sup a[href,name]',
-                */
 
                 requiredContent: 'figure(*); figcaption(hi-cap)',
 
@@ -95,11 +117,15 @@
 
             editor.widgets.add( 'sidebar', {
 
+                //initialize primary widget button. Uses icon defined in plugin
                 button: 'Create a sidebar',
+
+                //specify which dialog box should pop-up when the widget command is executed
                 dialog: 'figure',
 
                 template: templates.sidebar,
-        
+                
+                //sidebars have basically no restrictions on what you can put inside
                 editables: {
                     sidebarbody: {
                         selector: 'aside'
@@ -112,6 +138,7 @@
                 requiredContent: 'aside(inlay);',
 
                 upcast: function( element ) {
+                    //pullquote have the same basic structure and classes as sidebars, so we need to filter them out.
                     return element.name == 'aside' && element.hasClass( 'inlay' ) && (element.hasClass( 'pullquote' ) === false);
                 },
 
@@ -123,11 +150,15 @@
 
             editor.widgets.add( 'pullquote', {
 
+                //initialize primary widget button. Uses icon defined in plugin
                 button: 'Create a pullquote',
+
+                //specify which dialog box should pop-up when the widget command is executed
                 dialog: 'figure',
 
                 template: templates.pullquote,
-        
+                
+                //pullqoutes are heavily restricted in the content they allow
                 editables: {
                     pullquote: {
                         selector: 'aside',
@@ -137,9 +168,6 @@
                 
                 allowedContent:
                     'aside(!inlay !pullquote);',
-/*
-                disallowedContent: 'u s a',
-                */
 
                 requiredContent: 'aside(inlay pullquote);',
 
@@ -152,19 +180,21 @@
                 data: updateAlignAndWidth()
 
             } );
-
+            
+            // Register dialog box
             CKEDITOR.dialog.add( 'figure', this.path + 'dialogs/figure.js' );
 
             // Register context menu option for editing widget.
             
             if ( editor.contextMenu ) {
+                //BUG: currently only appears on the widget parent element, not on child elements
                 editor.addMenuGroup( 'figureGroup', 10 );
 
                 editor.addMenuItem( 'figureItem', {
                     label: 'Figure',
                     command: 'figure',
                     group: 'figureGroup',
-/*
+                    /*
                     refresh: function() {
                         var elementPath = editor.elementPath(),
                             widget = getFocusedWidget( editor );
@@ -191,37 +221,34 @@
                 });
             }
             
+            // Register dropdown for selecting widget size
             editor.ui.addRichCombo( 'Size', {
                 label: 'Size',
                 title: 'Size',
                 toolbar: 'styles,10',
-
+                /*
+                Replaced with plugin-wide var
                 sizes: {
                     'sm':'Small',
                     'med':'Medium',
                     'lrg':'Large',
                     'xlrg':'Extra-large'
                 },
+                */
 
                 panel: {
+                    // use the default styles for a dropdown
                     css: [ CKEDITOR.skin.getPath( 'editor' ) ].concat( editor.config.contentsCss ),
                     multiSelect: false,
                     attributes: { 'aria-label': 'size' }
                 },
 
                 init: function() {
-                    //var sizes = { 'sm':'Small', 'med':'Medium', 'lrg':'Large', 'xlrg':'Extra-large' };
                     this.startGroup( 'Size' );
 
-                    for (var size in this.sizes) {
-                        this.add( size, this.sizes[size]);
+                    for (var size in sizes) {
+                        this.add( size, sizes[size]);
                     }
-                    /*
-                    this.add( 'sm', 'Small', 'Small' );
-                    this.add( 'med', 'Medium' );
-                    this.add( 'lrg', 'Large' );
-                    this.add( 'xlrg', 'Extra-large' );
-                    */
 
                     //this.setValue('sm');
                     this.setState( CKEDITOR.TRISTATE_DISABLED );
@@ -229,6 +256,7 @@
 
                 onClick: function( value ) {
                     var widget = getFocusedWidget( editor );
+
                     if (!widget) {
                         return;
                     }
@@ -236,7 +264,7 @@
                         editor.focus();
                         editor.fire( 'saveSnapshot' );
                         widget.setData('width', value);
-                        this.setValue(value, this.sizes[value]);
+                        this.setValue(value, sizes[value]);
                         /*
                         var style = styles[ value ],
                             elementPath = editor.elementPath();
@@ -253,11 +281,10 @@
                 refresh: function() {
                     var elementPath = editor.elementPath(),
                         widget = getFocusedWidget( editor );
-                        //sizes = { 'sm':'Small', 'med':'Medium', 'lrg':'Large', 'xlrg':'Extra-large' };
 
                     if (widget){
                         console.log(widget.data.width);
-                        this.setValue(widget.data.width, this.sizes[widget.data.width]);
+                        this.setValue(widget.data.width, sizes[widget.data.width]);
                     }
                     else {
                         this.setState( CKEDITOR.TRISTATE_DISABLED );
@@ -282,6 +309,14 @@
 
     function initAlignAndWidth() {
         return function() {
+            /*
+            for (var size in sizes) {
+                if ( this.element.hasClass( size ) )
+                    this.setData( 'width', size );
+                    if ( size === 'xlrg' )
+            }
+            */
+
             if ( this.element.hasClass( 'sm' ) )
                 this.setData( 'width', 'sm' );
             else if ( this.element.hasClass( 'med' ) )
@@ -325,35 +360,31 @@
                     }
                 }
             }
-            
-
-            /*
-            if ( this.element.find('figcaption.hi-cap') )
-                this.setData('hasCredit', true);
-            else
-                this.setData('hasCredit', false);
-
-            if ( this.element.find('figcaption:not(.hi-cap)') !== null )
-                this.setData('hasCaption', true);
-            else
-                this.setData('hasCaption', false);
-            */
-
         };
     }
 
     function updateAlignAndWidth() {
         return function() {
+            for (var position in positions) {
+                this.element.removeClass( position );
+            }
+            /*
             this.element.removeClass( 'lt' );
             this.element.removeClass( 'rt' );
             this.element.removeClass( 'ct' );
+            */
             if ( this.data.align && this.data.width !== 'xlrg')
                 this.element.addClass( this.data.align );
 
+            for (var size in sizes) {
+                this.element.removeClass( size );
+            }
+            /*
             this.element.removeClass( 'sm' );
             this.element.removeClass( 'med' );
             this.element.removeClass( 'lrg' );
             this.element.removeClass( 'xlrg' );
+            */
             if ( this.data.width )
                 this.element.addClass( this.data.width );
                 if ( !this.data.align && this.data.width !== 'xlrg')
