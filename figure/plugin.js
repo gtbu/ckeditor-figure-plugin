@@ -94,11 +94,11 @@
                     },
                     */
                     credit: {
-                        selector: 'figcaption.hi-cap',
+                        selector: 'figcaption.hi-cap:nth-of-type(1)',
                         allowedContent: 'em strong s sub sup a[href,name];'
                     },
                     caption: {
-                        selector: 'figcaption:not(.hi-cap)',
+                        selector: 'figcaption:not(.hi-cap):nth-of-type(1)',
                         //allowedContent: 'br em strong sub sup u s; a[!href]'
                         allowedContent: 'em strong s sub sup; a[href,name]; p h2 h3 h4 h5 h6(*);'
                     },
@@ -106,18 +106,12 @@
                         selector: 'img',
                         allowedContent: 'a[!href,rel](*); img[!src,alt](*);'
                     },
-                    /*
-                    iframe: {
-                        selector: 'iframe',
-                        allowedContent: 'iframe[*](*);'
-                    }
-                    */
                     credit2: {
-                        selector: 'figcaption.hi-cap:nth-of-type(2), div.ai:nth-of-type(2) figcaption.hi-cap',
+                        selector: 'figcaption.hi-cap:nth-of-type(2)',
                         allowedContent: 'em strong s sub sup a[href,name];'
                     },
                     caption2: {
-                        selector: 'figcaption:not(.hi-cap):nth-of-type(2), div.ai:nth-of-type(2) figcaption:not(.hi-cap)',
+                        selector: 'figcaption:not(.hi-cap):nth-of-type(2)',
                         //allowedContent: 'br em strong sub sup u s; a[!href]'
                         allowedContent: 'em strong s sub sup; a[href,name]; p h2 h3 h4 h5 h6(*);'
                     },
@@ -126,11 +120,11 @@
                         allowedContent: 'a[!href,rel](*); img[!src,alt](*);'
                     },
                     credit3: {
-                        selector: 'figcaption.hi-cap:nth-of-type(3), div.ai:nth-of-type(3) figcaption.hi-cap',
+                        selector: 'figcaption.hi-cap:nth-of-type(3)',
                         allowedContent: 'em strong s sub sup a[href,name];'
                     },
                     caption3: {
-                        selector: 'figcaption:not(.hi-cap):nth-of-type(3), div.ai:nth-of-type(3) figcaption:not(.hi-cap)',
+                        selector: 'figcaption:not(.hi-cap):nth-of-type(3)',
                         //allowedContent: 'br em strong sub sup u s; a[!href]'
                         allowedContent: 'em strong s sub sup; a[href,name]; p h2 h3 h4 h5 h6(*);'
                     },
@@ -139,11 +133,11 @@
                         allowedContent: 'a[!href,rel](*); img[!src,alt](*);'
                     },
                     credit4: {
-                        selector: 'figcaption.hi-cap:nth-of-type(4), div.ai:nth-of-type(4) figcaption.hi-cap',
+                        selector: 'figcaption.hi-cap:nth-of-type(4)',
                         allowedContent: 'em strong s sub sup a[href,name];'
                     },
                     caption4: {
-                        selector: 'figcaption:not(.hi-cap):nth-of-type(4), div.ai:nth-of-type(4) figcaption:not(.hi-cap)',
+                        selector: 'figcaption:not(.hi-cap):nth-of-type(4)',
                         //allowedContent: 'br em strong sub sup u s; a[!href]'
                         allowedContent: 'em strong s sub sup; a[href,name]; p h2 h3 h4 h5 h6(*);'
                     },
@@ -152,18 +146,36 @@
                         allowedContent: 'a[!href,rel](*); img[!src,alt](*);'
                     },
                     credit5: {
-                        selector: 'figcaption.hi-cap:nth-of-type(5), div.ai:nth-of-type(5) figcaption.hi-cap',
+                        selector: 'figcaption.hi-cap:nth-of-type(5)',
                         allowedContent: 'em strong s sub sup a[href,name];'
                     },
                     caption5: {
-                        selector: 'figcaption:not(.hi-cap):nth-of-type(4), div.ai:nth-of-type(5) figcaption:not(.hi-cap)',
+                        selector: 'figcaption:not(.hi-cap):nth-of-type(5)',
                         //allowedContent: 'br em strong sub sup u s; a[!href]'
                         allowedContent: 'em strong s sub sup; a[href,name]; p h2 h3 h4 h5 h6(*);'
                     },
                     img5: {
                         selector: 'a:nth-of-type(5) img, img:nth-of-type(5)',
                         allowedContent: 'a[!href,rel](*); img[!src,alt](*);'
-                    }
+                    },
+                    lbcredit2: {
+                        selector: 'div.ai:nth-of-type(2) figcaption.hi-cap',
+                        allowedContent: 'em strong s sub sup a[href,name];'
+                    },
+                    lbcaption2: {
+                        selector: 'div.ai:nth-of-type(2) figcaption:not(.hi-cap)',
+                        //allowedContent: 'br em strong sub sup u s; a[!href]'
+                        allowedContent: 'em strong s sub sup; a[href,name]; p h2 h3 h4 h5 h6(*);'
+                    },
+                    lbcredit3: {
+                        selector: 'div.ai:nth-of-type(3) figcaption.hi-cap',
+                        allowedContent: 'em strong s sub sup a[href,name];'
+                    },
+                    lbcaption3: {
+                        selector: 'div.ai:nth-of-type(3) figcaption:not(.hi-cap)',
+                        //allowedContent: 'br em strong sub sup u s; a[!href]'
+                        allowedContent: 'em strong s sub sup; a[href,name]; p h2 h3 h4 h5 h6(*);'
+                    },
                 },
 
                 allowedContent:
@@ -171,7 +183,7 @@
                     //'figure; img[!src,alt]; figcaption(hi-cap);',
 
 
-                requiredContent: 'figure(*); figcaption(hi-cap)',
+                requiredContent: 'figure(*)',
 
                 upcast: function( element ) {
                     // didn't catch lightboxed captions (which are nested in div.ai)
@@ -413,7 +425,7 @@
 
             positionCommand.prototype = {
                 
-                
+                //startDisabled: true,
                 init: function( editor ) {
 
                     this.setState( CKEDITOR.TRISTATE_DISABLED );
@@ -430,7 +442,7 @@
                     */
 
                     var widget = getFocusedWidget( editor );
-                    if (widget == null) {
+                    if (widget === null) {
                         this.setState( CKEDITOR.TRISTATE_DISABLED );
                     }
                 }
@@ -959,9 +971,11 @@
         var widget = editor.widgets.focused,
             container = editor.widgets.widgetHoldingFocusedEditable;
 
+        /*
         if (widget)
-            //console.log(widget.name);
-
+            console.log(widget.name);
+        */
+        
         if ( widget && ( widget.name === 'figure' || 'sidebar' || 'pullquote' ) ) {
             //console.log(widget.name);
             return widget;
