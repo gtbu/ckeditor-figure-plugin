@@ -65,7 +65,9 @@ CKEDITOR.dialog.add( 'figure', function( editor ) {
                         label: 'Width',
                         items: [
                             [ 'small', 'sm' ],
+                            [ 'medium-small', 'med-sm' ],
                             [ 'medium', 'med' ],
+                            [ 'medium-large', 'med-lrg' ],
                             [ 'large', 'lrg' ],
                             [ 'extra-large', 'xlrg' ]
                         ],
